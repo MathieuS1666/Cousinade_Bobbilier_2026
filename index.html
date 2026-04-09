@@ -11,6 +11,19 @@
             margin: 0 auto;
             padding: 20px;
             text-align: center;
+            background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: #333;
+            min-height: 100vh;
+        }
+        /* Fond semi-transparent pour les contenus */
+        .contenu {
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         h1 {
             color: #2c3e50;
@@ -24,7 +37,7 @@
             border: 1px solid #ddd;
             padding: 10px;
             border-radius: 4px;
-            background-color: #f9f9f9;
+            background-color: rgba(255, 255, 255, 0.8);
         }
         .categorie-section h3 {
             margin-top: 0;
@@ -88,31 +101,33 @@
     </style>
 </head>
 <body>
-    <h1>Liste des Plats pour l'Événement Familial</h1>
-    <p>Merci d'indiquer ce que vous allez apporter, votre nom, le nombre de parts et le type de plat !</p>
+    <div class="contenu">
+        <h1>Liste des Plats pour les Cousinades Bobillier - 9 mai 2026</h1>
+        <p>Merci d'indiquer ce que vous allez apporter, votre nom, le nombre de parts et le type de plat !</p>
 
-    <div class="form-group">
-        <input type="text" id="nomPersonne" placeholder="Votre nom">
+        <div class="form-group">
+            <input type="text" id="nomPersonne" placeholder="Votre nom">
+        </div>
+        <div class="form-group">
+            <input type="text" id="nouveauPlat" placeholder="Ex: Tarte aux pommes, Salade de pâtes...">
+        </div>
+
+        <div class="plat-categories">
+            <label><input type="checkbox" id="apero"> Apéro</label>
+            <label><input type="checkbox" id="entree"> Entrée</label>
+            <label><input type="checkbox" id="platPrincipal"> Plat</label>
+            <label><input type="checkbox" id="dessert"> Dessert</label>
+        </div>
+
+        <div class="form-group">
+            <input type="number" id="nombreParts" placeholder="Nombre de parts" min="1">
+        </div>
+
+        <button onclick="ajouterPlat()">Ajouter mon plat</button>
+
+        <h2>Liste des plats déjà proposés :</h2>
+        <div id="platsListe"></div>
     </div>
-    <div class="form-group">
-        <input type="text" id="nouveauPlat" placeholder="Ex: Tarte aux pommes, Salade de pâtes...">
-    </div>
-
-    <div class="plat-categories">
-        <label><input type="checkbox" id="apero"> Apéro</label>
-        <label><input type="checkbox" id="entree"> Entrée</label>
-        <label><input type="checkbox" id="platPrincipal"> Plat</label>
-        <label><input type="checkbox" id="dessert"> Dessert</label>
-    </div>
-
-    <div class="form-group">
-        <input type="number" id="nombreParts" placeholder="Nombre de parts" min="1">
-    </div>
-
-    <button onclick="ajouterPlat()">Ajouter mon plat</button>
-
-    <h2>Liste des plats déjà proposés :</h2>
-    <div id="platsListe"></div>
 
     <script>
         // Liste des plats avec nom, nombre de parts et catégories
