@@ -19,11 +19,24 @@
             text-align: left;
             margin: 20px 0;
         }
-        #platsListe li {
+        .categorie-section {
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
             padding: 10px;
-            background-color: #f9f9f9;
-            margin: 5px 0;
             border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+        .categorie-section h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        #platsListe li {
+            padding: 8px;
+            background-color: white;
+            margin: 3px 0;
+            border-radius: 3px;
             list-style-type: none;
             display: flex;
             justify-content: space-between;
@@ -75,7 +88,7 @@
     </style>
 </head>
 <body>
-    <h1>Liste des Plats pour les cousinades Bobillier - 9 mai 2026</h1>
+    <h1>Liste des Plats pour l'Événement Familial</h1>
     <p>Merci d'indiquer ce que vous allez apporter, votre nom, le nombre de parts et le type de plat !</p>
 
     <div class="form-group">
@@ -93,13 +106,13 @@
     </div>
 
     <div class="form-group">
-        <input type="number" id="nombreParts" placeholder="Nombre de parts éstimé" min="1">
+        <input type="number" id="nombreParts" placeholder="Nombre de parts" min="1">
     </div>
 
     <button onclick="ajouterPlat()">Ajouter mon plat</button>
 
     <h2>Liste des plats déjà proposés :</h2>
-    <ul id="platsListe"></ul>
+    <div id="platsListe"></div>
 
     <script>
         // Liste des plats avec nom, nombre de parts et catégories
@@ -151,18 +164,40 @@
 
         function afficherPlats() {
             const liste = document.getElementById('platsListe');
-            liste.innerHTML = plats.map((item, index) => `
-                <li>
-                    <span>
-                        <strong>${item.nom}</strong> apporte <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}) :
-                        ${item.apero ? 'Apéro ' : ''}
-                        ${item.entree ? 'Entrée ' : ''}
-                        ${item.platPrincipal ? 'Plat ' : ''}
-                        ${item.dessert ? 'Dessert' : ''}
-                    </span>
-                    <button class="supprimer-btn" onclick="supprimerPlat(${index})">Supprimer</button>
-                </li>
-            `).join('');
+
+            // Filtrer les plats par catégorie
+            const aperos = plats.filter(plat => plat.apero);
+            const entrees = plats.filter(plat => plat.entree);
+            const platsPrincipaux = plats.filter(plat => plat.platPrincipal);
+            const desserts = plats.filter(plat => plat.dessert);
+
+            // Fonction pour générer le HTML d'une section de catégorie
+            const genererSection = (titre, plats) => {
+                if (plats.length === 0) return '';
+                return `
+                    <div class="categorie-section">
+                        <h3>${titre}</h3>
+                        <ul>
+                            ${plats.map((item, index) => `
+                                <li>
+                                    <span>
+                                        <strong>${item.nom}</strong> apporte <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).
+                                    </span>
+                                    <button class="supprimer-btn" onclick="supprimerPlat(${plats.indexOf(item)})">Supprimer</button>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            };
+
+            // Générer le HTML pour chaque catégorie
+            liste.innerHTML = `
+                ${genererSection('Apéro', aperos)}
+                ${genererSection('Entrées', entrees)}
+                ${genererSection('Plats', platsPrincipaux)}
+                ${genererSection('Desserts', desserts)}
+            `;
         }
     </script>
 </body>
