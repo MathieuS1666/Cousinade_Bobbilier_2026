@@ -25,12 +25,25 @@
             margin: 5px 0;
             border-radius: 4px;
             list-style-type: none;
+        }
+        .plat-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+        .plat-info {
+            flex: 1;
+        }
+        .plat-categories {
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .plat-categories label {
+            margin-right: 10px;
         }
         input, button {
-            padding: 10px;
+            padding: 8px;
             margin: 5px 0;
             width: 100%;
             box-sizing: border-box;
@@ -40,17 +53,18 @@
             color: white;
             border: none;
             cursor: pointer;
+            margin-top: 5px;
         }
         button:hover {
             background-color: #2980b9;
         }
         .supprimer-btn {
             background-color: #e74c3c;
-            margin-left: 10px;
             padding: 5px;
             width: 80px;
             font-size: 12px;
             white-space: nowrap;
+            margin-left: 10px;
         }
         .supprimer-btn:hover {
             background-color: #c0392b;
@@ -61,8 +75,8 @@
     </style>
 </head>
 <body>
-    <h1>Liste des Plats pour les Cousinades Bobillier 2026</h1>
-    <p>Merci d'indiquer ce que vous allez apporter, votre nom et le nombre de parts !</p>
+    <h1>Liste des Plats pour l'Événement Familial</h1>
+    <p>Merci d'indiquer ce que vous allez apporter, votre nom, le nombre de parts et le type de plat !</p>
 
     <div class="form-group">
         <input type="text" id="nomPersonne" placeholder="Votre nom">
@@ -79,7 +93,7 @@
     <ul id="platsListe"></ul>
 
     <script>
-        // Liste des plats avec nom et nombre de parts
+        // Liste des plats avec nom, nombre de parts et catégories
         let plats = [];
 
         // Charger les plats depuis le stockage local (si disponible)
@@ -98,7 +112,8 @@
             const parts = parseInt(partsInput.value);
 
             if (nom && plat && !isNaN(parts) && parts > 0) {
-                plats.push({ nom, plat, parts });
+                // Par défaut, aucune case n'est cochée
+                plats.push({ nom, plat, parts, apero: false, entree: false, platPrincipal: false, dessert: false });
                 localStorage.setItem('platsFamille', JSON.stringify(plats));
                 afficherPlats();
                 nomInput.value = '';
@@ -110,21 +125,36 @@
             }
         }
 
-        // Fonction pour supprimer un plat
         function supprimerPlat(index) {
             plats.splice(index, 1);
             localStorage.setItem('platsFamille', JSON.stringify(plats));
             afficherPlats();
         }
 
+        function mettreAJourCategorie(index, categorie) {
+            plats[index][categorie] = !plats[index][categorie];
+            localStorage.setItem('platsFamille', JSON.stringify(plats));
+            afficherPlats();
+        }
+
         function afficherPlats() {
             const liste = document.getElementById('platsListe');
-            liste.innerHTML = plats.map((item, index) =>
-                `<li>
-                    <span><strong>${item.nom}</strong> apporte <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).</span>
-                    <button class="supprimer-btn" onclick="supprimerPlat(${index})">Supprimer</button>
-                </li>`
-            ).join('');
+            liste.innerHTML = plats.map((item, index) => `
+                <li>
+                    <div class="plat-item">
+                        <div class="plat-info">
+                            <span><strong>${item.nom}</strong> apporte <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).</span>
+                            <div class="plat-categories">
+                                <label><input type="checkbox" ${item.apero ? 'checked' : ''} onchange="mettreAJourCategorie(${index}, 'apero')"> Apéro</label>
+                                <label><input type="checkbox" ${item.entree ? 'checked' : ''} onchange="mettreAJourCategorie(${index}, 'entree')"> Entrée</label>
+                                <label><input type="checkbox" ${item.platPrincipal ? 'checked' : ''} onchange="mettreAJourCategorie(${index}, 'platPrincipal')"> Plat</label>
+                                <label><input type="checkbox" ${item.dessert ? 'checked' : ''} onchange="mettreAJourCategorie(${index}, 'dessert')"> Dessert</label>
+                            </div>
+                        </div>
+                        <button class="supprimer-btn" onclick="supprimerPlat(${index})">Supprimer</button>
+                    </div>
+                </li>
+            `).join('');
         }
     </script>
 </body>
