@@ -25,6 +25,9 @@
             margin: 5px 0;
             border-radius: 4px;
             list-style-type: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         input, button {
             padding: 10px;
@@ -40,6 +43,14 @@
         }
         button:hover {
             background-color: #2980b9;
+        }
+        .supprimer-btn {
+            background-color: #e74c3c;
+            margin-left: 10px;
+            padding: 5px 10px;
+        }
+        .supprimer-btn:hover {
+            background-color: #c0392b;
         }
         .form-group {
             margin-bottom: 10px;
@@ -84,28 +95,32 @@
             const parts = parseInt(partsInput.value);
 
             if (nom && plat && !isNaN(parts) && parts > 0) {
-                // Vérifie si le plat existe déjà pour cette personne
-                const platExistant = plats.find(p => p.nom === nom && p.plat === plat);
-                if (!platExistant) {
-                    plats.push({ nom, plat, parts });
-                    localStorage.setItem('platsFamille', JSON.stringify(plats));
-                    afficherPlats();
-                    nomInput.value = '';
-                    platInput.value = '';
-                    partsInput.value = '';
-                    alert('Merci pour votre contribution !');
-                } else {
-                    alert('Vous avez déjà proposé ce plat.');
-                }
+                plats.push({ nom, plat, parts });
+                localStorage.setItem('platsFamille', JSON.stringify(plats));
+                afficherPlats();
+                nomInput.value = '';
+                platInput.value = '';
+                partsInput.value = '';
+                alert('Merci pour votre contribution !');
             } else {
                 alert('Veuillez remplir tous les champs correctement.');
             }
         }
 
+        // Fonction pour supprimer un plat
+        function supprimerPlat(index) {
+            plats.splice(index, 1);
+            localStorage.setItem('platsFamille', JSON.stringify(plats));
+            afficherPlats();
+        }
+
         function afficherPlats() {
             const liste = document.getElementById('platsListe');
-            liste.innerHTML = plats.map(item =>
-                `<li><strong>${item.nom}</strong> apporte <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).</li>`
+            liste.innerHTML = plats.map((item, index) =>
+                `<li>
+                    <span><strong>${item.nom}</strong> apporte <em>${item.plat}</em> (${item.parts} part${item.parts > 1 ? 's' : ''}).</span>
+                    <button class="supprimer-btn" onclick="supprimerPlat(${index})">Supprimer</button>
+                </li>`
             ).join('');
         }
     </script>
